@@ -1,3 +1,8 @@
+#include <iostream>
+
+#include "memory.h"
+#include "cpu.h"
+
 int main()
 {
 	bool TripleFault = false;
