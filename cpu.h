@@ -1,6 +1,9 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include <ostream>
+#include <iomanip>
+
 #include "memory.h"
 
 typedef unsigned char REG; 	// 8 bit registers
@@ -24,7 +27,7 @@ private:
 	Memory* L;  // Left memory bank ( Default )
 	Memory* R;  // Right memory bank
 
-	REG IP; /* Instruction pointer */ REG IR; /* Instruction register */	
+	REG IP; /* Instruction pointer */ REG IR; // Instruction register	
 	REG SP; /* Stack pointer       */ REG BP; // Base pointer
 
 	// 2 general purpose 8bit registers
@@ -82,11 +85,12 @@ public:
 
 	friend std::ostream& operator<< (std::ostream& os, Processor& p)
 	{
-		os << "Registers:\n"
-		   << "[AX] "   << (int)p.AX << " [BX] " << (int)p.BX
-		   << "\t[IP] " << (int)p.IP << " [IR] " << (int)p.IR
-		   << "\t[SP] " << (int)p.SP << " [BP] " << (int)p.BP << "\n"
-		   << "Flags:\n"
+		os <<  "[AX] " << std::dec << std::right << std::setw(3) << std::setfill(' ') << (int)p.AX
+		   << " [BX] " << std::right << std::setw(3) << std::setfill(' ') << (int)p.BX
+		   << " [IP] " << std::right << std::setw(3) << std::setfill(' ') << (int)p.IP
+		   << " [IR] " << std::right << std::setw(4) << std::showbase << std::internal << std::hex << std::setfill('0') << (int)p.IR
+		   << " [SP] " << std::dec << std::right << std::setw(3) << std::setfill(' ') << (int)p.SP
+		   << " [BP] " << std::right << std::setw(3) << std::setfill(' ') << (int)p.BP << "\t"
 		   << static_cast<bool>(p.FLAGS&0x80) << static_cast<bool>(p.FLAGS&0x40) // Masks to find flags
 		   << static_cast<bool>(p.FLAGS&0x20) << static_cast<bool>(p.FLAGS&0x10)
 		   << static_cast<bool>(p.FLAGS&0x08) << static_cast<bool>(p.FLAGS&0x04)
@@ -131,7 +135,7 @@ void Processor::Decode()
 	case JUMP_LESS: JMP_LES();	break;
 	case JUMP_GEQU: JMP_GEQ();	break;
 	case JUMP_LEQU:	JMP_NEQ();	break;
-	default: AX = 0xFF; Halt(); break; // AX stores error code - 255 Invalid instruction
+	default: Halt(); break;
 	}
 	if(Ready()) IP++; // Point to next instruction
 }
