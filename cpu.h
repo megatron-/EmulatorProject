@@ -165,11 +165,11 @@ void Processor::PP_FLAG() { FLAGS = MB->Read(++SP); }
 void Processor::PP_ALL()  { PP_FLAG(); PP_REG(); 	} // And in reverse order
 void Processor::JMP_ADDR(){ IP = (MB->Read(++IP)-1);} // JUMP to ADDR
 void Processor::JMP_CRRY(){ if(static_cast<bool>(FLAGS&0x10)) IP = (MB->Read(++IP)-1); else ++IP; }	// JUMP if CF
-void Processor::JMP_EQU() { if(AX == BX) IP = (MB->Read(++IP)-1); else ++IP; }	// JUMP if AX == BX
-void Processor::JMP_NEQ() { if(AX != BX) IP = (MB->Read(++IP)-1); else ++IP; }	// JUMP if AX != BX
-void Processor::JMP_GRT() { if(AX > BX)  IP = (MB->Read(++IP)-1); else ++IP; } 	// JUMP if AX > BX
-void Processor::JMP_LES() { if(AX < BX)  IP = (MB->Read(++IP)-1); else ++IP; }	// JUMP if AX < BX
-void Processor::JMP_GEQ() { if(AX >= BX) IP = (MB->Read(++IP)-1); else ++IP; }	// JUMP if AX >= BX
-void Processor::JMP_LEQ() { if(AX <= BX) IP = (MB->Read(++IP)-1); else ++IP; }	// JUMP if AX <= BX
+void Processor::JMP_EQU() { if(AX == BX) JMP_ADDR(); else ++IP; }	// JUMP if AX == BX
+void Processor::JMP_NEQ() { if(AX != BX) JMP_ADDR(); else ++IP; }	// JUMP if AX != BX
+void Processor::JMP_GRT() { if(AX > BX)  JMP_ADDR(); else ++IP; } 	// JUMP if AX > BX
+void Processor::JMP_LES() { if(AX < BX)  JMP_ADDR(); else ++IP; }	// JUMP if AX < BX
+void Processor::JMP_GEQ() { if(AX >= BX) JMP_ADDR(); else ++IP; }	// JUMP if AX >= BX
+void Processor::JMP_LEQ() { if(AX <= BX) JMP_ADDR(); else ++IP; }	// JUMP if AX <= BX
 
 #endif
