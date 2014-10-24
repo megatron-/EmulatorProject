@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 
 #include "memory.h"
@@ -32,17 +33,17 @@ void Program_V01(Memory* m)
 	m->Write(8,0x02); // Load AX with BX
 	m->Write(9,0x13); // Pop stack into BX      - (3 bytes/SP = 232)
 
-	// Pop flags and registers from the stack   - (0 bytes/SP = 255)
-	m->Write(10,0x16);
-
 	/* Stack works correctly, though no memory protection yet (75%) */
 
-	m->Write(11,0x1C); // Jump if AX < BX
-	m->Write(12,0x20); // To address
+	m->Write(10,0x1C); // Jump if AX < BX
+	m->Write(11,0x20); // To address
+
+	// Pop flags and registers from the stack   - (0 bytes/SP = 255)
+	m->Write(12,0x16);
 
 	// Check if jump worked
 	m->Write(32,0x01); // Load AX
-	m->Write(33,0x80); // With value 128
+	m->Write(33,0x80); // With value 128 */
 }
 
 void WriteRom(Memory* m)
@@ -78,15 +79,19 @@ int main()
 	Memory RAMLEFT;
 
 	ClearMemory(&RAMLEFT); 	// Init mem locations to 0
-	//Program_V01(&RAMLEFT);// Writes instructions directly to memory
+	Program_V01(&RAMLEFT);// Writes instructions directly to memory
 	//WriteRom(&RAMLEFT); 	// Saves memory to file
-	LoadRom(&RAMLEFT);	  	// Loads file into memory
+	//LoadRom(&RAMLEFT);	  	// Loads file into memory
 	
 	Processor MyProcessor(RAMLEFT);
+
+	std::cout << MyProcessor;
+
 	while(MyProcessor.Ready())
 	{
 		MyProcessor.Fetch();
 		MyProcessor.Decode();
+		std::cout << MyProcessor;
 	}
 	std::cout << "Processor halted -\n" << MyProcessor;
 	return 0;
